@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Complete SMM Panel with Telegram Bot",
   "main": "app.js",
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  },
   "scripts": {
     "start": "node app.js",
     "bot": "node bot.js"
