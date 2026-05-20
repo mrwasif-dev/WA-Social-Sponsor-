@@ -741,7 +741,7 @@
   
   // ============ PRICE PREVIEW FOR ORDER PAGE ============
   if(document.getElementById('orderQty')) {
-    let pricePerThousand = <%= service?.pricePerThousand || 0 %>;
+    let pricePerThousand = <%= (typeof service !== 'undefined' && service) ? service.pricePerThousand : 0 %>;
     document.getElementById('orderQty').addEventListener('input', function() {
       let qty = this.value;
       let total = (pricePerThousand * qty) / 1000;
