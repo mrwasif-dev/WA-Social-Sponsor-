@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SMM Panel - Professional Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
+    :root { --bg: #f0f2f5; --card: #ffffff; --text: #1a1a2e; --text-light: #6c757d; --primary: #4361ee; --primary-dark: #3a56d4; --success: #06d6a0; --danger: #ef476f; --warning: #ffd166; --border: #e9ecef; --shadow: 0 10px 40px rgba(0,0,0,0.08); --shadow-sm: 0 2px 8px rgba(0,0,0,0.04); }
+    body.dark { --bg: #121212; --card: #1e1e2d; --text: #eef2ff; --text-light: #a0a4b0; --border: #2d2d3a; --shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .page { animation: fadeInUp 0.4s ease-out; }
+    .navbar { background: var(--card); backdrop-filter: blur(10px); box-shadow: var(--shadow-sm); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .logo { font-size: 1.6rem; font-weight: 700; background: linear-gradient(135deg, var(--primary), #7209b7); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .nav-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .nav-link { color: var(--text); text-decoration: none; padding: 0.5rem 1rem; border-radius: 12px; font-weight: 500; }
+    .nav-link:hover, .nav-link.active { background: var(--primary); color: white; }
+    .theme-toggle { background: var(--bg); border: none; padding: 0.6rem 1rem; border-radius: 30px; cursor: pointer; color: var(--text); font-size: 1.2rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--card); border-radius: 24px; padding: 1.5rem; box-shadow: var(--shadow); transition: transform 0.25s; border: 1px solid var(--border); }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+    .stat-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 0.5rem; }
+    .stat-value { font-size: 2.3rem; font-weight: 700; color: var(--primary); }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .menu-btn { background: var(--card); border: 1px solid var(--border); padding: 1.2rem; border-radius: 20px; text-align: center; font-weight: 600; cursor: pointer; color: var(--text); }
+    .menu-btn:hover { background: var(--primary); color: white; transform: scale(1.02); border-color: var(--primary); }
+    .form-card { background: var(--card); border-radius: 28px; padding: 2rem; max-width: 500px; margin: 2rem auto; box-shadow: var(--shadow); }
+    input, select, textarea { width: 100%; padding: 0.9rem; margin: 0.6rem 0; border: 1px solid var(--border); border-radius: 16px; background: var(--bg); color: var(--text); font-size: 1rem; }
+    button, .btn { background: var(--primary); color: white; border: none; padding: 0.9rem 1.8rem; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 1rem; }
+    button:hover { background: var(--primary-dark); transform: scale(0.98); }
+    .order-table { width: 100%; background: var(--card); border-radius: 20px; overflow-x: auto; }
+    .order-table table { width: 100%; border-collapse: collapse; }
+    .order-table th, .order-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .badge { padding: 0.3rem 0.8rem; border-radius: 40px; font-size: 0.8rem; font-weight: 600; }
+    .badge-pending { background: #ffd16620; color: #ffd166; }
+    .badge-processing { background: #4361ee20; color: #4361ee; }
+    .badge-completed { background: #06d6a020; color: #06d6a0; }
+    .badge-rejected { background: #ef476f20; color: #ef476f; }
+    .chat-widget { position: fixed; bottom: 2rem; right: 2rem; width: 360px; background: var(--card); border-radius: 24px; box-shadow: var(--shadow); display: none; flex-direction: column; z-index: 1000; }
+    .chat-header { background: var(--primary); color: white; padding: 1rem; border-radius: 24px 24px 0 0; cursor: pointer; display: flex; justify-content: space-between; }
+    .chat-messages { height: 400px; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .chat-input-area { display: flex; padding: 1rem; gap: 0.5rem; border-top: 1px solid var(--border); }
+    .chat-bubble { max-width: 80%; padding: 0.7rem 1rem; border-radius: 20px; font-size: 0.9rem; }
+    .user-bubble { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .bot-bubble { background: var(--bg); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .chat-toggle { position: fixed; bottom: 2rem; right: 2rem; background: var(--primary); width: 60px; height: 60px; border-radius: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); animation: pulse 2s infinite; }
+    @media (max-width: 768px) { .navbar { flex-direction: column; text-align: center; } .stats-grid { grid-template-columns: 1fr; } .chat-widget { width: 90%; right: 5%; left: 5%; } .container { padding: 1rem; } }
+    .toast-notify { position: fixed; top: 1rem; right: 1rem; background: var(--card); color: var(--text); padding: 1rem 1.5rem; border-radius: 60px; box-shadow: var(--shadow); z-index: 1100; animation: slideIn 0.3s ease; }
+    .qr-code { text-align: center; margin: 1rem 0; }
+    .qr-code img { border-radius: 20px; box-shadow: var(--shadow); }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">✨ SMM<span style="color: var(--primary);">Panel</span></div>
+  <div class="nav-links">
+    <% if (user) { %>
+      <a href="/dashboard" class="nav-link <%= page === 'dashboard' ? 'active' : '' %>"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="/services" class="nav-link <%= page === 'categories' || page === 'services' || page === 'order' ? 'active' : '' %>"><i class="fas fa-store"></i> Services</a>
+      <a href="/order-history" class="nav-link <%= page === 'order-history' ? 'active' : '' %>"><i class="fas fa-history"></i> Orders</a>
+      <a href="/balance-history" class="nav-link <%= page === 'balance-history' ? 'active' : '' %>"><i class="fas fa-chart-line"></i> Balance</a>
+      <a href="/deposit" class="nav-link <%= page === 'deposit' ? 'active' : '' %>"><i class="fas fa-wallet"></i> Deposit</a>
+      <a href="/promo" class="nav-link <%= page === 'promo' ? 'active' : '' %>"><i class="fas fa-ticket-alt"></i> Promo</a>
+      <a href="/support" class="nav-link <%= page === 'support' ? 'active' : '' %>"><i class="fas fa-headset"></i> Support</a>
+      <a href="/bulk-order" class="nav-link <%= page === 'bulk' ? 'active' : '' %>"><i class="fas fa-layer-group"></i> Bulk</a>
+      <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <% } %>
+  </div>
+  <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+</div>
+
+<main class="container">
+  <% if (page === 'login') { %>
+    <div class="page"><div class="form-card"><h2>🔐 Welcome Back</h2><p style="color:var(--text-light); margin-bottom:1.5rem;">Login to your SMM Panel</p>
+    <form method="POST" action="/login"><input type="text" name="whatsapp" placeholder="WhatsApp Number" required><input type="password" name="password" placeholder="Password" required><button type="submit">Login →</button></form>
+    <p style="margin-top:1rem;">No account? <a href="/signup" style="color:var(--primary);">Create one</a></p>
+    <% if (error) { %><div class="toast-notify" style="background:#ef476f; color:white;">⚠️ <%= error %></div><% } %></div></div>
+  
+  <% } else if (page === 'signup') { %>
+    <div class="page"><div class="form-card"><h2>✨ Create Account</h2>
+    <form method="POST" action="/signup"><input type="text" name="name" placeholder="Full Name" required><input type="text" name="whatsapp" placeholder="WhatsApp Number" required><input type="password" name="password" placeholder="Password" required><button type="submit">Sign Up →</button></form>
+    <p>Already have an account? <a href="/login">Login</a></p></div></div>
+  
+  <% } else if (page === 'dashboard') { %>
+    <div class="page"><h1>📊 Dashboard</h1><div class="stats-grid">
+      <div class="stat-card"><div class="stat-title">💰 Current Balance</div><div class="stat-value">₨ <%= user.balance.toLocaleString() %></div></div>
+      <div class="stat-card"><div class="stat-title">💸 Total Spent</div><div class="stat-value">₨ <%= user.totalSpent.toLocaleString() %></div></div>
+      <div class="stat-card"><div class="stat-title">📦 Total Orders</div><div class="stat-value"><%= user.totalOrders %></div></div>
+    </div>
+    <div class="menu-grid"><div class="menu-btn" onclick="location.href='/services'"><i class="fas fa-cogs"></i> Service Select</div><div class="menu-btn" onclick="location.href='/support'"><i class="fas fa-headset"></i> Support</div><div class="menu-btn" onclick="location.href='/deposit'"><i class="fas fa-coins"></i> Deposit Fund</div><div class="menu-btn" onclick="location.href='/order-history'"><i class="fas fa-list"></i> Order History</div><div class="menu-btn" onclick="location.href='/balance-history'"><i class="fas fa-chart-line"></i> Balance History</div><div class="menu-btn" onclick="claimReward()"><i class="fas fa-gift"></i> Daily Reward</div><div class="menu-btn" onclick="location.href='/promo'"><i class="fas fa-ticket-alt"></i> Promo Code</div><div class="menu-btn" onclick="location.href='/bulk-order'"><i class="fas fa-layer-group"></i> Bulk Order</div></div></div>
+  
+  <% } else if (page === 'categories') { %>
+    <div class="page"><h2>📱 Select Category</h2><div class="menu-grid"><% categories.forEach(c => { %><div class="menu-btn" onclick="location.href='/services/<%= c._id %>'"><i class="fas fa-th-large"></i> <%= c.name %></div><% }); %></div></div>
+  
+  <% } else if (page === 'services') { %>
+    <div class="page"><h2>🎯 <%= category.name %> Services</h2><div class="menu-grid"><% services.forEach(s => { %><div class="menu-btn" onclick="location.href='/order/<%= s._id %>'"><i class="fas fa-bolt"></i> <%= s.name %><br><small>₨<%= s.pricePerThousand %>/1k | <%= s.minQty %>-<%= s.maxQty %></small></div><% }); %></div></div>
+  
+  <% } else if (page === 'order') { %>
+    <div class="page"><div class="form-card"><h2>📝 Order: <%= service.name %></h2><p>Price: ₨<%= service.pricePerThousand %> per 1000<br>Min: <%= service.minQty %> | Max: <%= service.maxQty %><br>Your Balance: ₨<%= user.balance %></p>
+    <input type="text" id="orderLink" placeholder="Video/Post Link (URL)" required><input type="number" id="orderQty" placeholder="Quantity" min="<%= service.minQty %>" max="<%= service.maxQty %>" required><p id="pricePreview" style="font-weight:bold; margin:10px 0;"></p><button onclick="placeOrder()">Pay Now</button></div></div>
+  
+  <% } else if (page === 'order-history') { %>
+    <div class="page"><h2>📋 Order History</h2><div class="order-table"><table><thead><tr><th>Date</th><th>Service</th><th>Qty</th><th>Price</th><th>Status</th></tr></thead><tbody><% orders.forEach(o => { %><tr><td><%= new Date(o.createdAt).toLocaleString() %></td><td><%= o.serviceName %></td><td><%= o.quantity %></td><td>₨<%= o.price %></td><td><span class="badge badge-<%= o.status %>"><%= o.status %></span></td></tr><% }); %></tbody></table></div></div>
+  
+  <% } else if (page === 'balance-history') { %>
+    <div class="page"><h2>💰 Balance History</h2><div class="order-table"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance After</th></tr></thead><tbody><% transactions.forEach(t => { %><tr><td><%= new Date(t.createdAt).toLocaleString() %></td><td><%= t.description %></td><td style="color:<%= t.type==='order'?'red':'green' %>"><%= t.type==='order'?`-₨${t.amount}`:`+₨${t.amount}` %></td><td>₨<%= t.balanceAfter %></td></tr><% }); %></tbody></table></div></div>
+  
+  <% } else if (page === 'deposit') { %>
+    <div class="page"><div class="form-card"><h2>💳 Deposit Funds</h2><p>Scan QR code below with any wallet app (EasyPaisa, JazzCash, Bank)</p><div class="qr-code"><img src="<%= process.env.QR_PAYMENT_LINK %>" width="200" alt="QR Code"></div><p><strong>Instructions:</strong> Scan QR → Send payment → Copy Transaction ID → Take Screenshot → Fill form below</p>
+    <input type="number" id="depositAmount" placeholder="Amount (PKR)" required><input type="text" id="depositTxn" placeholder="Transaction ID" required><input type="text" id="depositScreenshot" placeholder="Screenshot URL (imgur, ibb.co, etc.)" required><button onclick="requestDeposit()">Send Deposit Request</button></div></div>
+  
+  <% } else if (page === 'promo') { %>
+    <div class="page"><div class="form-card"><h2>🎫 Redeem Promo Code</h2><input type="text" id="promoCode" placeholder="Enter Promo Code" required><button onclick="redeemPromo()">Redeem</button></div></div>
+  
+  <% } else if (page === 'support') { %>
+    <div class="page"><div class="form-card"><h2>🆘 Support Center</h2><a href="https://wa.me/<%= process.env.ADMIN_WHATSAPP %>" target="_blank"><button style="width:100%; margin-bottom:1rem;"><i class="fab fa-whatsapp"></i> Contact Admin on WhatsApp</button></a><hr><h3>🤖 AI Assistant</h3><p>Ask me anything about balance, prices, orders, deposits, etc. (Urdu/English)</p>
+    <div id="chatPreview" style="background:var(--bg); border-radius:16px; padding:1rem; margin:1rem 0; min-height:100px;"></div><input type="text" id="chatQuestion" placeholder="Type your question..."><button onclick="askAI()">Ask</button></div></div>
+  
+  <% } else if (page === 'bulk') { %>
+    <div class="page"><div class="form-card"><h2>📦 Bulk Order (Multiple Services)</h2><div id="bulkFields"></div><button onclick="addBulkField()" style="margin-right:1rem;">+ Add More Service</button><button onclick="submitBulk()">Submit Bulk Order</button></div></div>
+  <% } %>
+</main>
+
+<div class="chat-toggle" id="chatToggle"><i class="fas fa-robot fa-2x"></i></div>
+<div class="chat-widget" id="chatWidget"><div class="chat-header"><span>🤖 AI Assistant (Urdu/English)</span><span id="closeChat">✖</span></div><div class="chat-messages" id="chatMessages"><div class="chat-bubble bot-bubble">👋 Hello! Ask me about balance, prices, orders, deposits, rewards. I speak Urdu & English!</div></div><div class="chat-input-area"><input id="chatInput" placeholder="Type here..."><button id="sendChat">Send</button></div></div>
+
+<script>
+  // Theme Toggle
+  const themeToggle = document.getElementById('themeToggle');
+  if(localStorage.theme === 'dark') document.body.classList.add('dark');
+  themeToggle?.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.theme = document.body.classList.contains('dark') ? 'dark' : 'light'; });
+  
+  function showToast(msg, isError = false) { let toast = document.createElement('div'); toast.className = 'toast-notify'; toast.style.background = isError ? '#ef476f' : '#06d6a0'; toast.style.color = 'white'; toast.innerText = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000); }
+  
+  async function claimReward() { let res = await fetch('/api/daily-reward'); let data = await res.json(); if(data.error) showToast(data.error, true); else showToast(`🎉 You got ₨${data.amount}! New balance: ₨${data.balance}`); setTimeout(()=>location.reload(),1500); }
+  
+  async function placeOrder() { let link = document.getElementById('orderLink')?.value; let qty = document.getElementById('orderQty')?.value; if(!link || !qty) return showToast('Fill all fields', true); let res = await fetch('/api/place-order', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ serviceId: window.location.pathname.split('/')[2], link, quantity: qty }) }); let data = await res.json(); if(data.error) showToast(data.error, true); else { showToast('✅ Order placed successfully!'); setTimeout(()=>location.href='/order-history',1500); } }
+  
+  async function requestDeposit() { let amount = document.getElementById('depositAmount')?.value; let txn = document.getElementById('depositTxn')?.value; let ss = document.getElementById('depositScreenshot')?.value; if(!amount||!txn||!ss) return showToast('Fill all fields',true); let res = await fetch('/api/deposit-request',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ amount, transactionId: txn, screenshot:ss }) }); let data = await res.json(); if(data.success) showToast('✅ Deposit request sent! Admin will review.'); }
+  
+  async function redeemPromo() { let code = document.getElementById('promoCode')?.value; if(!code) return showToast('Enter promo code', true); let res = await fetch('/api/redeem-promo',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code }) }); let data = await res.json(); if(data.error) showToast(data.error, true); else showToast(`🎉 Promo applied! +₨${data.amount} added. New balance: ₨${data.balance}`); }
+  
+  async function askAI() { let q = document.getElementById('chatQuestion')?.value; if(!q) return; let preview = document.getElementById('chatPreview'); if(preview) { preview.innerHTML = '<i>🤖 Thinking...</i>'; let res = await fetch('/api/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: q }) }); let data = await res.json(); preview.innerHTML = `<strong>You:</strong> ${q}<br><strong>Bot:</strong> ${data.reply}`; } }
+  
+  if(document.getElementById('orderQty')) { document.getElementById('orderQty').addEventListener('input', function() { let qty = this.value; let pricePerThousand = <%= service?.pricePerThousand || 0 %>; let total = (pricePerThousand * qty) / 1000; document.getElementById('pricePreview').innerText = `Total Price: ₨${Math.floor(total)}`; }); }
+  
+  let bulkIndex = 0; let servicesList = <%- JSON.stringify(services || []) %>;
+  function addBulkField() { let div = document.createElement('div'); div.className = 'bulk-item'; div.style.marginBottom = '1rem'; div.style.padding = '1rem'; div.style.border = '1px solid var(--border)'; div.style.borderRadius = '16px'; let selectHtml = '<select id="bulkService'+bulkIndex+'" style="width:100%; margin-bottom:0.5rem;">'; servicesList.forEach(s => { selectHtml += `<option value="${s._id}">${s.name} (₨${s.pricePerThousand}/1k | ${s.minQty}-${s.maxQty})</option>`; }); selectHtml += '</select>'; div.innerHTML = selectHtml + '<input id="bulkLink'+bulkIndex+'" placeholder="Video/Post Link" style="margin-bottom:0.5rem;"><input id="bulkQty'+bulkIndex+'" placeholder="Quantity" type="number">'; document.getElementById('bulkFields').appendChild(div); bulkIndex++; }
+  
+  async function submitBulk() { let orders = []; for(let i=0;i<bulkIndex;i++) { let serviceId = document.getElementById(`bulkService${i}`)?.value; let link = document.getElementById(`bulkLink${i}`)?.value; let qty = document.getElementById(`bulkQty${i}`)?.value; if(serviceId && link && qty) orders.push({ serviceId, link, quantity: qty }); } if(orders.length === 0) return showToast('Add at least one order', true); let res = await fetch('/api/bulk-order',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ orders }) }); let data = await res.json(); if(data.error) showToast(data.error, true); else showToast(`✅ ${data.ordersCount} orders placed! Total: ₨${data.totalPrice}`); }
+  
+  // Chat Widget
+  const chatToggleBtn = document.getElementById('chatToggle'); const chatWidget = document.getElementById('chatWidget'); const closeChat = document.getElementById('closeChat'); const sendChat = document.getElementById('sendChat'); const chatInput = document.getElementById('chatInput'); const chatMessages = document.getElementById('chatMessages');
+  chatToggleBtn?.addEventListener('click', () => chatWidget.style.display = 'flex'); closeChat?.addEventListener('click', () => chatWidget.style.display = 'none'); sendChat?.addEventListener('click', async () => { let msg = chatInput.value.trim(); if(!msg) return; chatMessages.innerHTML += `<div class="chat-bubble user-bubble">${msg}</div>`; chatInput.value = ''; let res = await fetch('/api/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: msg }) }); let data = await res.json(); chatMessages.innerHTML += `<div class="chat-bubble bot-bubble">${data.reply}</div>`; chatMessages.scrollTop = chatMessages.scrollHeight; });
+</script>
+</body>
+</html>
