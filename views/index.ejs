@@ -751,8 +751,8 @@
   
   // ============ BULK ORDER ============
   let bulkIndex = 0;
-  let servicesList = <%- JSON.stringify(services || []) %>;
-  
+
+  let servicesList = <%- (typeof services !== 'undefined') ? JSON.stringify(services) : '[]' %>;
   function addBulkField() {
     let div = document.createElement('div');
     div.className = 'bulk-item';
